@@ -14,14 +14,20 @@ export class AppComponent implements OnInit {
   constructor(private usersService: UsersService) {}
 
   ngOnInit() {
-    this.usersService.userActivated.subscribe(
-      (id: number) => {
-        if (id === 1) {
-          this.user1Activated = true;
-        } else if (id === 2) {
-          this.user2Activated = true;
-        }
+    this.usersService.userActivated.subscribe((id: number) => {
+      if (id === 1) {
+        this.user1Activated = true;
+      } else if (id === 2) {
+        this.user2Activated = true;
       }
-    );
+    });
+
+    this.usersService.userDeactivated.subscribe((id: number) => {
+      if (id === 1) {
+        this.user1Activated = false;
+      } else if (id === 2) {
+        this.user2Activated = false;
+      }
+    });
   }
 }

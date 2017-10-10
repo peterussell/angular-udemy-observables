@@ -11,4 +11,5 @@ export class UsersService {
 
      NB. IT IS BETTER TO USE A SUBJECT THAN AN EVENT EMITTER! */
   userActivated = new Subject();
+  userDeactivated = new Subject();
 }
