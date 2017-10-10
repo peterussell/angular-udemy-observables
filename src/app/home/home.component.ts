@@ -1,7 +1,9 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 
 import { Observable } from 'rxjs/Observable';
 import { Observer } from 'rxjs/Observer';
+import { Subscription } from 'rxjs/Subscription';
+
 import 'rxjs/Rx';
 
 @Component({
@@ -9,18 +11,25 @@ import 'rxjs/Rx';
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.css']
 })
-export class HomeComponent implements OnInit {
+export class HomeComponent implements OnInit, OnDestroy {
+  numbersObsSubscription: Subscription;
+  customObsSubscription: Subscription;
 
   constructor() { }
 
   ngOnInit() {
+    // We need to unsubscribe, or we'll create a memory leak! (ngOnDestroy)
+    const numbersObservable = Observable.interval(1000);
+    this.numbersObsSubscription = numbersObservable.subscribe((number: number) => {
+      console.log(number);
+    });
 
     /* A more complex example of an observable made from scratch. Note that
        the 'observer' passed in to the anonymous function here is the final
        observer which will receive the result of the subscription.
 
        Observer.create takes the function to be run, passing in the Observer. */
-    const myObservable = Observable.create((observer: Observer<string>) => {
+    const customObservable = Observable.create((observer: Observer<string>) => {
       setTimeout(() => {
         observer.next('hello!');
       }, 2000);
@@ -40,10 +49,15 @@ export class HomeComponent implements OnInit {
       }, 6000);
     })
 
-    myObservable.subscribe(
+    this.customObsSubscription = customObservable.subscribe(
       (data: string) => { console.log(data); },
       (error: string) => { console.log(error); },
       () => { console.log('Completed!'); } // completed receives no args
     );
+  }
+
+  ngOnDestroy() {
+    this.numbersObsSubscription.unsubscribe();
+    this.customObsSubscription.unsubscribe();
   }
 }
