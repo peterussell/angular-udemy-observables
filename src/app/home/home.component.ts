@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 
 import { Observable } from 'rxjs/Observable';
+import { Observer } from 'rxjs/Observer';
 import 'rxjs/Rx';
 
 @Component({
@@ -13,21 +14,30 @@ export class HomeComponent implements OnInit {
   constructor() { }
 
   ngOnInit() {
-    /* There are different methods of choosing when Observables should be
-       emitted, in this case it emits an event at the interval (ms) passed
-       to interval(). */
-    const myNumbers = Observable.interval(1000);
 
-    /* Subscribe has three handlers, each being a function passed as an
-       argument to subscribe():
-        1. normal data handling
-        2. error handling
-        3. completed handling */
-    myNumbers.subscribe(
-      (number: number) => {
-        console.log(number);
-      }
-    )
+    /* A more complex example of an observable made from scratch. Note that
+       the 'observer' passed in to the anonymous function here is the final
+       observer which will receive the result of the subscription.
+
+       Observer.create takes the function to be run, passing in the Observer. */
+    const myObservable = Observable.create((observer: Observer<string>) => {
+      setTimeout(() => {
+        observer.next('hello!');
+      }, 2000);
+
+      setTimeout(() => {
+        observer.next('hello again!');
+      }, 4000);
+
+      setTimeout(() => {
+        observer.error('this doesn\'t work');
+      }, 5000);
+    })
+
+    myObservable.subscribe(
+      (data: string) => { console.log(data); },
+      (error: string) => { console.log(error); },
+      () => { console.log('Completed!'); } // completed receives no args
+    );
   }
-
 }
