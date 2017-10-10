@@ -18,8 +18,10 @@ export class HomeComponent implements OnInit, OnDestroy {
   constructor() { }
 
   ngOnInit() {
-    // We need to unsubscribe, or we'll create a memory leak! (ngOnDestroy)
-    const numbersObservable = Observable.interval(1000);
+    // Observable Operators can be chained to any Observable (just need to import rxjs/Rx)
+    const numbersObservable = Observable.interval(1000)
+      .map((data: number) => { return data * 2; });
+
     this.numbersObsSubscription = numbersObservable.subscribe((number: number) => {
       console.log(number);
     });
@@ -57,6 +59,7 @@ export class HomeComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
+    // We need to unsubscribe, or we'll create a memory leak!
     this.numbersObsSubscription.unsubscribe();
     this.customObsSubscription.unsubscribe();
   }
