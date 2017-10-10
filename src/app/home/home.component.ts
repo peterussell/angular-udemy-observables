@@ -30,8 +30,14 @@ export class HomeComponent implements OnInit {
       }, 4000);
 
       setTimeout(() => {
-        observer.error('this doesn\'t work');
+        // observer.error('this doesn\'t work');
+        observer.complete();
       }, 5000);
+
+      // An example of an next that will never get fired because we already completed.
+      setTimeout(() => {
+        observer.next('a hello you will never see');
+      }, 6000);
     })
 
     myObservable.subscribe(
